@@ -8,5 +8,7 @@
   </div>
   <hr>
   <div>{{post.content|linebreaksbr}}</div>
+  <!--linebreaksbr: django는 개행을 \n으로 인식하지만 html에서는 이를 인식하지 못하기 때문에 이를 해결하기 위한 기능-->
   <hr>
+  <a href="{% url 'post-list' %}">돌아가기</a>
 {% endblock post_container %}
