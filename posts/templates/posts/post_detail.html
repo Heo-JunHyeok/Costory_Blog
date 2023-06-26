@@ -1,14 +1,30 @@
 {% extends './base.html' %}
+{% load static %}
 
-{% block post_container %}
-  <h2>{{post.title}}</h2>
-  <div>
-    작성일:
-    {{post.dt_created}}
+<!-- post_detail css -->
+{% block css %}
+  <link rel="stylesheet" href="{% static 'posts/css/post_detail.css' %}"/>
+{% endblock css %}
+
+<!-- post_detail header-->
+{% block post_header %}
+  <div class="container">
+    <h1 class="title">{{post.title}}</h1>
+    <p class="date">{{post.dt_created}}</p>
   </div>
-  <hr>
-  <div>{{post.content|linebreaksbr}}</div>
-  <!--linebreaksbr: django는 개행을 \n으로 인식하지만 html에서는 이를 인식하지 못하기 때문에 이를 해결하기 위한 기능-->
-  <hr>
-  <a href="{% url 'post-list' %}">돌아가기</a>
-{% endblock post_container %}
+{% endblock post_header %}
+
+<!-- post_detail content-->
+{% block content %}
+  <div class="content">
+    <p class="text">{{post.content|linebreaksbr}}</p>
+    <!--linebreaksbr: django는 개행을 \n으로 인식하지만 html에서는 이를 인식하지 못하기 때문에 이를 해결하기 위한 기능-->
+    <p class="date_md">수정일
+      <span>{{post.dt_modified}}</span></p>
+  </div>
+  <div class="btn">
+    <div class="btn_list">
+      <a href="{% url 'post-list' %}">목록으로</a>
+    </div>
+  </div>
+{% endblock content %}
