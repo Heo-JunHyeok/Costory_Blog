@@ -1,4 +1,14 @@
 <form method='post'>{% csrf_token %}
-  {{form.as_ul}}
+  <h3>제목</h3>
+  <p>{{form.title}}</p>
+  <!--form을 custom하면 에러출력이 안되서 에러출력도 custom-->
+  {% for error in form.title.errors %}
+    <p>{{error}}</p>
+  {% endfor %}
+  <h3>내용</h3>
+  <p>{{form.content}}</p>
+  {% for error in form.content.errors %}
+    <p>{{error}}</p>
+  {% endfor %}
   <input type="submit" value="전송">
 </form>
