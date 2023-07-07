@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-
-# from django.views import View
-from django.views.generic import CreateView, ListView, DetailView
+from django.views import View
+from django.views.generic import (
+    CreateView,
+    ListView,
+    DetailView,
+    UpdateView,
+    DeleteView,
+)
 from django.urls import reverse
 from .models import Post
 from .forms import PostForm
@@ -14,7 +19,7 @@ def index(request):
 
 class PostListView(ListView):
     model = Post
-    template_name = "posts/psot_list.html"
+    template_name = "posts/post_list.html"
     context_object_name = "posts"
     ordering = ["-dt_created"]
     paginate_by = 6
@@ -37,25 +42,24 @@ class PostCreateView(CreateView):
         return reverse("post-detail", kwargs={"post_id": self.objects.id})
 
 
-def post_update(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    if request.method == "POST":
-        post_form = PostForm(request.POST, instance=post)
-        if post_form.is_valid():
-            post_form.save()
-            return redirect("post-detail", post_id=post.id)
-    else:
-        post_form = PostForm(instance=post)
-    return render(request, "posts/post_form.html", {"form": post_form})
+class PostUpdateView(UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = "posts/post_form.html"
+    pk_url_kwarg = "post_id"
+
+    def get_success_url(self):
+        return reverse("post-detail", kwargs={"post_id": self.object.id})
 
 
-def post_delete(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    if request.method == "POST":
-        post.delete()
-        return redirect("post-list")
-    else:
-        return render(request, "posts/post_confirm_delete.html", {"post": post})
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = "posts/post_confirm_delete.html"
+    pk_url_kwarg = "post_id"
+    context_object_name = "post"
+
+    def get_success_url(self):
+        return reverse("post-list")
 
 
 # ---------------------------------------------------------------------------------------
@@ -86,6 +90,27 @@ def post_delete(request, post_id):
 #     else:
 #         post_form = PostForm()
 #     return render(request, "posts/post_form.html", {"form": post_form})
+
+
+# def post_update(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
+#     if request.method == "POST":
+#         post_form = PostForm(request.POST, instance=post)
+#         if post_form.is_valid():
+#             post_form.save()
+#             return redirect("post-detail", post_id=post.id)
+#     else:
+#         post_form = PostForm(instance=post)
+#     return render(request, "posts/post_form.html", {"form": post_form})
+
+
+# def post_delete(request, post_id):
+#     post = get_object_or_404(Post, id=post_id)
+#     if request.method == "POST":
+#         post.delete()
+#         return redirect("post-list")
+#     else:
+#         return render(request, "posts/post_confirm_delete.html", {"post": post})
 
 
 # --------------------------------------------------------------------------------------
