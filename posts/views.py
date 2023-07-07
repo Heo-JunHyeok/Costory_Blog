@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 
 # from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from django.urls import reverse
 from .models import Post
 from .forms import PostForm
@@ -13,14 +13,23 @@ def index(request):
     return redirect("post-list")
 
 
-def post_list(request):
-    posts = Post.objects.all()
-    paginator = Paginator(posts, 6)
-    curr_page_num = request.GET.get("page")
-    if curr_page_num is None:
-        curr_page_num = 1
-    page = paginator.page(curr_page_num)
-    return render(request, "posts/post_list.html", {"page": page})
+# def post_list(request):
+#     posts = Post.objects.all()
+#     paginator = Paginator(posts, 6)
+#     curr_page_num = request.GET.get("page")
+#     if curr_page_num is None:
+#         curr_page_num = 1
+#     page = paginator.page(curr_page_num)
+#     return render(request, "posts/post_list.html", {"page": page})
+
+
+class PostListView(ListView):
+    model = Post
+    template_name = "posts/psot_list.html"
+    context_object_name = "posts"
+    ordering = ["-dt_created"]
+    paginate_by = 6
+    page_kwarg = "page"
 
 
 def post_detail(request, post_id):
