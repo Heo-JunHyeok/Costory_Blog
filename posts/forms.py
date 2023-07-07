@@ -15,7 +15,7 @@ class PostForm(forms.ModelForm):
             "content": forms.Textarea(attrs={"placeholder": "내용을 입력하세요"}),
         }
 
-    # Form에서 유효성 검사하기 1. clean_data  2. formfield 사용하기
+    # Form에서 유효성 검사하기 1. clean_(data)  2. formfield 사용하기
     def clean_title(self):
         title = self.cleaned_data["title"]
         if "*" in title:

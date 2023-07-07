@@ -7,56 +7,71 @@ from django.views.generic import (
     DetailView,
     UpdateView,
     DeleteView,
+    RedirectView,
 )
 from django.urls import reverse
 from .models import Post
 from .forms import PostForm
 
 
-def index(request):
-    return redirect("post-list")
+class IndexRedirectView(RedirectView):
+    pattern_name = "post-list"
 
 
 class PostListView(ListView):
     model = Post
-    template_name = "posts/post_list.html"
-    context_object_name = "posts"
     ordering = ["-dt_created"]
     paginate_by = 6
-    page_kwarg = "page"
+
+    # 생략 가능
+    # template_name = "posts/post_list.html"    # default: 앱/(model)_list.html
+    # context_object_name = "posts"             # default: object_list, (model)_list
+    # page_kwarg = "page"                       # defaut: page
 
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = "posts/post_detail.html"
-    pk_url_kwarg = "post_id"
-    context_object_name = "post"
+
+    # 생략 가능
+    # template_name = "posts/post_detail.html"
+    # # urls.py에서 int형 파라미터를 'pk'로 할 경우, 관련 코드 모두 'pk'로 변환해야 한다.
+    # pk_url_kwarg = "post_id"
+    # context_object_name = "post"              # default: object, (model)
 
 
 class PostCreateView(CreateView):
     model = Post
     form_class = PostForm
-    template_name = "posts/post_form.html"
 
+    # 생략 가능
+    # template_name = "posts/post_form.html"
+
+    # post_id -> pk
     def get_success_url(self):
-        return reverse("post-detail", kwargs={"post_id": self.objects.id})
+        return reverse("post-detail", kwargs={"pk": self.objects.id})
 
 
 class PostUpdateView(UpdateView):
     model = Post
     form_class = PostForm
-    template_name = "posts/post_form.html"
-    pk_url_kwarg = "post_id"
+
+    # 생략 가능
+    # template_name = "posts/post_form.html"
+    # # detail과 동일
+    # pk_url_kwarg = "post_id"
 
     def get_success_url(self):
-        return reverse("post-detail", kwargs={"post_id": self.object.id})
+        return reverse("post-detail", kwargs={"pk": self.object.id})
 
 
 class PostDeleteView(DeleteView):
     model = Post
-    template_name = "posts/post_confirm_delete.html"
-    pk_url_kwarg = "post_id"
-    context_object_name = "post"
+
+    # 생략 가능
+    # template_name = "posts/post_confirm_delete.html"
+    # # detail과 동일
+    # pk_url_kwarg = "post_id"
+    # context_object_name = "post"
 
     def get_success_url(self):
         return reverse("post-list")
@@ -65,6 +80,11 @@ class PostDeleteView(DeleteView):
 # ---------------------------------------------------------------------------------------
 
 # FBV(Funtion Based View)
+
+
+# def index(request):
+#     return redirect("post-list")
+
 
 # def post_list(request):
 #     posts = Post.objects.all()

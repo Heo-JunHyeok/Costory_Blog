@@ -17,10 +17,10 @@
   <div class='btn_post'>
     <a href="{% url 'post-create' %}">글쓰기</a>
   </div>
-  {% if posts %}
+  {% if post_list %}
     <!--데이터가 있을 경우-->
     <div class="post_container">
-      {% for post in posts %}
+      {% for post in post_list %}
         <div class="post">
           <a href="{% url 'post-detail' post.id %}">
             <h2 class="title">{{post.title}}</h2>
